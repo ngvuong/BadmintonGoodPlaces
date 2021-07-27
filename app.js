@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 const Venue = require("./models/venue");
+const methodOverride = require("method-override");
 
 mongoose.connect("mongodb://localhost:27017/badminton-venue", {
   useNewUrlParser: true,
@@ -20,6 +21,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -37,13 +39,40 @@ app.get("/venues/new", (req, res) => {
 app.post("/venues", async (req, res) => {
   const venue = new Venue(req.body.venue);
   await venue.save();
-  res.redirect(`venues/${venue.id}`);
+  res.redirect(`/venues/${venue.id}`);
 });
 
 app.get("/venues/:id", async (req, res) => {
   const { id } = req.params;
   const venue = await Venue.findById(id);
   res.render("venues/show", { venue });
+});
+
+app.get("/venues/:id/edit", async (req, res) => {
+  const { id } = req.params;
+  const venue = await Venue.findById(id);
+  if (venue) {
+    res.render("venues/edit", { venue });
+  }
+});
+
+app.put("/venues/:id", async (req, res) => {
+  const { id } = req.params;
+  const venue = await Venue.findByIdAndUpdate(
+    id,
+    { ...req.body.venue },
+    {
+      runValidators: true,
+      new: true,
+    }
+  );
+  res.redirect(`/venues/${venue.id}`);
+});
+
+app.delete("/venues/:id", async (req, res) => {
+  const { id } = req.params;
+  await Venue.findByIdAndDelete(id);
+  res.redirect(`/venues`);
 });
 
 app.listen("3000", () => {

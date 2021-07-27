@@ -9,6 +9,16 @@
   <body>
     <h1><%=venue.name %></h1>
     <p><%= venue.location %></p>
-    <button><a href="/venues">Home</a></button>
+    <div>
+      <form action="/venues/<%= venue.id %>?_method=DELETE" method="POST">
+        <button>DELETE</button>
+      </form>
+    </div>
+    <footer>
+      <div>
+        <a href="/venues/<%= venue.id %>/edit ">Edit Venue</a>
+      </div>
+      <button><a href="/venues">Home</a></button>
+    </footer>
   </body>
 </html>
