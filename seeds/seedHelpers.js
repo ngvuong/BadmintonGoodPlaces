@@ -12,5 +12,5 @@ module.exports.places = [
   "Recreation Center",
   "University",
   "Community Center",
-  "League",
+  "Badminton League",
 ];
