@@ -1,17 +1,32 @@
 <%- layout('/layouts/boilerplate') %>
 
-<h1><%=venue.name %></h1>
-<p><%= venue.location %></p>
-<img src="<%=venue.image%>" alt="" />
-<p><%= venue.description %></p>
-<div>
-  <form action="/venues/<%= venue.id %>?_method=DELETE" method="POST">
-    <button>DELETE</button>
-  </form>
-</div>
-<footer>
-  <div>
-    <a href="/venues/<%= venue.id %>/edit ">Edit Venue</a>
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card">
+      <img src="<%=venue.image %> " class="card-img-top" alt="..." />
+      <div class="card-body">
+        <h5 class="card-title"><%=venue.name %></h5>
+        <p class="card-text"><%= venue.description %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted"><%= venue.location %></li>
+        <li class="list-group-item">$<%= venue.price %></li>
+      </ul>
+      <div class="card-body">
+        <a
+          class="card-link btn btn-warning"
+          href="/venues/<%= venue.id %>/edit "
+        >
+          Edit Venue
+        </a>
+        <form
+          class="d-inline"
+          action="/venues/<%= venue.id %>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">DELETE</button>
+        </form>
+      </div>
+    </div>
   </div>
-  <button><a href="/venues">Home</a></button>
-</footer>
+</div>
