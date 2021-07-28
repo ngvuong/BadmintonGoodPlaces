@@ -7,6 +7,7 @@ const VenueSchema = new Schema({
   description: String,
   location: String,
   hours: String,
+  image: String,
   rentals: Boolean,
 });
 
