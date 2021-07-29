@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
+const Joi = require("joi");
+const { venueSchema } = require("./schemas");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 const path = require("path");
@@ -28,6 +30,16 @@ app.set("views", path.join(__dirname, "/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+const validateVenue = (req, res, next) => {
+  const { error } = venueSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((ele) => ele.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -46,6 +58,7 @@ app.get("/venues/new", (req, res) => {
 
 app.post(
   "/venues",
+  validateVenue,
   catchAsync(async (req, res) => {
     const venue = new Venue(req.body.venue);
     await venue.save();
@@ -75,6 +88,7 @@ app.get(
 
 app.put(
   "/venues/:id",
+  validateVenue,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const venue = await Venue.findByIdAndUpdate(
@@ -104,8 +118,9 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  const { message = "Something went wrong", statusCode = 500 } = err;
-  res.status(statusCode).send(message);
+  const { statusCode = 500 } = err;
+  if (!err.message) err.message = "Something went wrong";
+  res.status(statusCode).render("error", { err });
 });
 
 app.listen("3000", () => {
