@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
+const catchAsync = require("./utils/catchAsync");
+const ExpressError = require("./utils/ExpressError");
 const path = require("path");
 const Venue = require("./models/venue");
 const methodOverride = require("method-override");
@@ -30,52 +32,80 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/venues", async (req, res) => {
-  const venues = await Venue.find({});
-  res.render("venues/index", { venues });
-});
+app.get(
+  "/venues",
+  catchAsync(async (req, res) => {
+    const venues = await Venue.find({});
+    res.render("venues/index", { venues });
+  })
+);
 
 app.get("/venues/new", (req, res) => {
   res.render("venues/new");
 });
 
-app.post("/venues", async (req, res) => {
-  const venue = new Venue(req.body.venue);
-  await venue.save();
-  res.redirect(`/venues/${venue.id}`);
-});
+app.post(
+  "/venues",
+  catchAsync(async (req, res) => {
+    const venue = new Venue(req.body.venue);
+    await venue.save();
+    res.redirect(`/venues/${venue.id}`);
+  })
+);
 
-app.get("/venues/:id", async (req, res) => {
-  const { id } = req.params;
-  const venue = await Venue.findById(id);
-  res.render("venues/show", { venue });
-});
+app.get(
+  "/venues/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const venue = await Venue.findById(id);
+    res.render("venues/show", { venue });
+  })
+);
 
-app.get("/venues/:id/edit", async (req, res) => {
-  const { id } = req.params;
-  const venue = await Venue.findById(id);
-  if (venue) {
-    res.render("venues/edit", { venue });
-  }
-});
-
-app.put("/venues/:id", async (req, res) => {
-  const { id } = req.params;
-  const venue = await Venue.findByIdAndUpdate(
-    id,
-    { ...req.body.venue },
-    {
-      runValidators: true,
-      new: true,
+app.get(
+  "/venues/:id/edit",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const venue = await Venue.findById(id);
+    if (venue) {
+      res.render("venues/edit", { venue });
     }
-  );
-  res.redirect(`/venues/${venue.id}`);
+  })
+);
+
+app.put(
+  "/venues/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const venue = await Venue.findByIdAndUpdate(
+      id,
+      { ...req.body.venue },
+      {
+        useFindAndModify: false,
+        runValidators: true,
+        new: true,
+      }
+    );
+    res.redirect(`/venues/${venue.id}`);
+  })
+);
+
+app.delete(
+  "/venues/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    await Venue.findByIdAndDelete(id);
+    res.redirect(`/venues`);
+  })
+);
+
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
 });
 
-app.delete("/venues/:id", async (req, res) => {
-  const { id } = req.params;
-  await Venue.findByIdAndDelete(id);
-  res.redirect(`/venues`);
+app.use((err, req, res, next) => {
+  const { message = "Something went wrong", statusCode = 500 } = err;
+  res.status(statusCode).send(message);
 });
 
 app.listen("3000", () => {

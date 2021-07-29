@@ -3,7 +3,12 @@
 <div class="row">
   <h1 class="text-center">Edit <%=venue.name %></h1>
   <div class="col-6 offset-3">
-    <form action="/venues/<%=venue.id%>?_method=PUT" method="POST">
+    <form
+      action="/venues/<%=venue.id%>?_method=PUT"
+      method="POST"
+      novalidate
+      class="validated-form"
+    >
       <div class="mb-3">
         <label class="form-label" for="name">Name</label>
         <input
@@ -12,7 +17,9 @@
           name="venue[name]"
           id="name"
           value="<%= venue.name %>"
+          required
         />
+        <div class="valid-feedback">Ok!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="location">Location</label>
@@ -22,7 +29,9 @@
           name="venue[location]"
           id="location"
           value="<%= venue.location %>"
+          required
         />
+        <div class="valid-feedback">Ok!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">Image URL</label>
@@ -32,7 +41,9 @@
           name="venue[image]"
           id="image"
           value="<%= venue.image %>"
+          required
         />
+        <div class="valid-feedback">Ok!</div>
       </div>
 
       <div class="mb-3">
@@ -48,7 +59,9 @@
             aria-label="price"
             aria-describedby="price-label"
             value="<%= venue.price %>"
+            required
           />
+          <div class="valid-feedback">Ok!</div>
         </div>
       </div>
 
@@ -60,14 +73,17 @@
           type="text"
           name="venue[description]"
           id="description"
+          required
         >
           <%= venue.description %>
+          
         </textarea>
+        <div class="valid-feedback">Ok!</div>
       </div>
       <button class="btn btn-primary my-3">Save Changes</button>
     </form>
 
-    <button class="btn btn-info">
+    <button class="btn btn-light">
       <a href="/venues">Back</a>
     </button>
   </div>

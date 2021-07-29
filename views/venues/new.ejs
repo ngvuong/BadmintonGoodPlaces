@@ -3,10 +3,17 @@
 <div class="row">
   <h1 class="text-center">New Venue</h1>
   <div class="col-6 offset-3">
-    <form action="/venues" method="POST">
+    <form action="/venues" method="POST" novalidate class="validated-form">
       <div class="mb-3">
         <label class="form-label" for="name">Name</label>
-        <input class="form-control" type="text" name="venue[name]" id="name" />
+        <input
+          class="form-control"
+          type="text"
+          name="venue[name]"
+          id="name"
+          required
+        />
+        <div class="valid-feedback">Ok!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="location">Location</label>
@@ -15,7 +22,9 @@
           type="text"
           name="venue[location]"
           id="location"
+          required
         />
+        <div class="valid-feedback">Ok!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">Image URL</label>
@@ -24,7 +33,9 @@
           type="text"
           name="venue[image]"
           id="image"
+          required
         />
+        <div class="valid-feedback">Ok!</div>
       </div>
 
       <div class="mb-3">
@@ -39,7 +50,9 @@
             placeholder="0.00"
             aria-label="price"
             aria-describedby="price-label"
+            required
           />
+          <div class="valid-feedback">Ok!</div>
         </div>
       </div>
 
@@ -51,12 +64,14 @@
           type="text"
           name="venue[description]"
           id="description"
+          required
         ></textarea>
+        <div class="valid-feedback">Ok!</div>
       </div>
       <button class="btn btn-primary my-3">Add Venue</button>
     </form>
 
-    <button class="btn btn-info">
+    <button class="btn btn-outline-light">
       <a href="/venues">Home</a>
     </button>
   </div>
