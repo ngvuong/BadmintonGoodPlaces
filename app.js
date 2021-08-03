@@ -119,6 +119,7 @@ app.delete(
   "/venues/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
+
     await Venue.findByIdAndDelete(id);
     res.redirect(`/venues`);
   })
@@ -128,12 +129,26 @@ app.post(
   "/venues/:id/reviews",
   validateReview,
   catchAsync(async (req, res) => {
-    const venue = await Venue.findById("6100b808281c3e3f4e7a9515");
+    const venue = await Venue.findById(req.params.id);
     const review = new Review(req.body.review);
     venue.reviews.push(review);
     await review.save();
     await venue.save();
     res.redirect(`/venues/${venue.id}`);
+  })
+);
+
+app.delete(
+  "/venues/:id/reviews/:reviewId",
+  catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Venue.findByIdAndUpdate(
+      id,
+      { $pull: { reviews: reviewId } },
+      { useFindAndModify: false }
+    );
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/venues/${id}`);
   })
 );
 
