@@ -2,12 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const Joi = require("joi");
-const { venueSchema } = require("./schemas");
+const { venueSchema, reviewSchema } = require("./schemas");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 const path = require("path");
 const Venue = require("./models/venue");
 const methodOverride = require("method-override");
+const Review = require("./models/review");
 
 mongoose.connect("mongodb://localhost:27017/badminton-venue", {
   useNewUrlParser: true,
@@ -32,6 +33,16 @@ app.use(methodOverride("_method"));
 
 const validateVenue = (req, res, next) => {
   const { error } = venueSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((ele) => ele.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((ele) => ele.message).join(",");
     throw new ExpressError(msg, 400);
@@ -70,7 +81,7 @@ app.get(
   "/venues/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const venue = await Venue.findById(id);
+    const venue = await Venue.findById(id).populate("reviews");
     res.render("venues/show", { venue });
   })
 );
@@ -110,6 +121,19 @@ app.delete(
     const { id } = req.params;
     await Venue.findByIdAndDelete(id);
     res.redirect(`/venues`);
+  })
+);
+
+app.post(
+  "/venues/:id/reviews",
+  validateReview,
+  catchAsync(async (req, res) => {
+    const venue = await Venue.findById("6100b808281c3e3f4e7a9515");
+    const review = new Review(req.body.review);
+    venue.reviews.push(review);
+    await review.save();
+    await venue.save();
+    res.redirect(`/venues/${venue.id}`);
   })
 );
 

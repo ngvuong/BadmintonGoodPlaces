@@ -9,6 +9,12 @@ const VenueSchema = new Schema({
   hours: String,
   image: String,
   rentals: Boolean,
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Venue", VenueSchema);
