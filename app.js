@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
+const flash = require("connect-flash");
 
 const ExpressError = require("./utils/ExpressError");
 const path = require("path");
@@ -38,8 +39,20 @@ const sessionConfig = {
   secret: "badsecret",
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 24 * 60 * 60 * 7,
+    maxAge: 1000 * 24 * 60 * 60 * 7,
+  },
 };
 app.use(session(sessionConfig));
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 // Venues routes
 app.use("/venues", venues);

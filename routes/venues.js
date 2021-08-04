@@ -35,6 +35,7 @@ router.post(
   catchAsync(async (req, res) => {
     const venue = new Venue(req.body.venue);
     await venue.save();
+    req.flash("success", "Successfully created venue!");
     res.redirect(`/venues/${venue.id}`);
   })
 );
@@ -44,6 +45,10 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const venue = await Venue.findById(id).populate("reviews");
+    if (!venue) {
+      req.flash("error", "Venue not found!");
+      return res.redirect("/venues");
+    }
     res.render("venues/show", { venue });
   })
 );
@@ -53,9 +58,12 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const venue = await Venue.findById(id);
-    if (venue) {
-      res.render("venues/edit", { venue });
+    if (!venue) {
+      req.flash("error", "Venue not found!");
+      return res.redirect("/venues");
     }
+
+    res.render("venues/edit", { venue });
   })
 );
 
@@ -72,6 +80,7 @@ router.put(
         new: true,
       }
     );
+    req.flash("success", "Successfully updated venue");
     res.redirect(`/venues/${venue.id}`);
   })
 );
@@ -82,6 +91,7 @@ router.delete(
     const { id } = req.params;
 
     await Venue.findByIdAndDelete(id);
+    req.flash("success", "Deleted venue!");
     res.redirect(`/venues`);
   })
 );

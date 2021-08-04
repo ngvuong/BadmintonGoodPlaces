@@ -28,6 +28,7 @@ router.post(
     venue.reviews.push(review);
     await review.save();
     await venue.save();
+    req.flash("success", "New review added!");
     res.redirect(`/venues/${venue.id}`);
   })
 );
@@ -38,6 +39,7 @@ router.delete(
     const { id, reviewId } = req.params;
     await Venue.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Deleted review!");
     res.redirect(`/venues/${id}`);
   })
 );
