@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Venue = require("../models/venue");
+const Review = require("../models/review");
 const cities = require("./cities");
 const { places } = require("./seedHelpers");
 
@@ -19,10 +20,14 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
   await Venue.deleteMany({});
+  await Review.deleteMany({});
   for (let i = 0; i < 50; i++) {
     const rand = Math.floor(Math.random() * 1000);
+    const rental = Math.floor(Math.random() * 2);
     const price = Math.floor(Math.random() * 21) + 5;
     const venue = new Venue({
+      author: "610a5798ed0f3a670219c315",
+      rental: rental === 1 ? "Yes" : "No",
       location: `${cities[rand].city}, ${cities[rand].state}`,
       name: `${cities[rand].city} ${sample(places)}`,
       image: "https://source.unsplash.com/800x450/?badminton",

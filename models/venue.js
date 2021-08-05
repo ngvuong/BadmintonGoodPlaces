@@ -9,7 +9,11 @@ const VenueSchema = new Schema({
   location: String,
   hours: String,
   image: String,
-  rentals: Boolean,
+  rental: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,

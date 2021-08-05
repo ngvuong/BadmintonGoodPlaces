@@ -36,6 +36,7 @@ router.post(
   validateVenue,
   catchAsync(async (req, res) => {
     const venue = new Venue(req.body.venue);
+    venue.author = req.user.id;
     await venue.save();
     req.flash("success", "Successfully created venue!");
     res.redirect(`/venues/${venue.id}`);
@@ -46,7 +47,9 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const venue = await Venue.findById(id).populate("reviews");
+    const venue = await Venue.findById(id)
+      .populate("reviews")
+      .populate("author");
     if (!venue) {
       req.flash("error", "Venue not found!");
       return res.redirect("/venues");

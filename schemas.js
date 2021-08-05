@@ -6,6 +6,7 @@ module.exports.venueSchema = Joi.object({
     price: Joi.number().required().min(0),
     image: Joi.string().required(),
     location: Joi.string().required(),
+    rental: Joi.string(),
     description: Joi.string().required(),
   }).required(),
 });
