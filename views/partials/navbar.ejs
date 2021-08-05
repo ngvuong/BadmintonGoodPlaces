@@ -1,6 +1,6 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/venues">Navbar</a>
+    <a class="navbar-brand" href="/venues">BGP</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -17,6 +17,14 @@
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link" href="/venues">Venues</a>
         <a class="nav-link" href="/venues/new">New Venue</a>
+      </div>
+      <div class="navbar-nav ms-auto">
+        <% if(!currentUser) {%>
+        <a href="/login" class="nav-link">Login</a>
+        <a href="/register" class="nav-link">Register</a>
+        <% } else {%>
+        <a href="/logout" class="nav-link">Logout</a>
+        <% } %>
       </div>
     </div>
   </div>

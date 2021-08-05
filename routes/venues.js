@@ -3,6 +3,7 @@ const router = express.Router();
 
 const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
+const { isLoggedIn } = require("../middleware");
 
 const Venue = require("../models/venue");
 const { venueSchema } = require("../schemas");
@@ -25,12 +26,13 @@ router.get(
   })
 );
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("venues/new");
 });
 
 router.post(
   "/",
+  isLoggedIn,
   validateVenue,
   catchAsync(async (req, res) => {
     const venue = new Venue(req.body.venue);
@@ -55,6 +57,7 @@ router.get(
 
 router.get(
   "/:id/edit",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const venue = await Venue.findById(id);
@@ -69,6 +72,7 @@ router.get(
 
 router.put(
   "/:id",
+  isLoggedIn,
   validateVenue,
   catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -87,6 +91,7 @@ router.put(
 
 router.delete(
   "/:id",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
 
