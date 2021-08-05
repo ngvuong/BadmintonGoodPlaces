@@ -2,21 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const catchAsync = require("../utils/catchAsync");
-const ExpressError = require("../utils/ExpressError");
-const { isLoggedIn } = require("../middleware");
+const { isLoggedIn, validateVenue, isAuthor } = require("../middleware");
 
 const Venue = require("../models/venue");
-const { venueSchema } = require("../schemas");
-
-const validateVenue = (req, res, next) => {
-  const { error } = venueSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((ele) => ele.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
 
 router.get(
   "/",
@@ -48,7 +36,7 @@ router.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const venue = await Venue.findById(id)
-      .populate("reviews")
+      .populate({ path: "reviews", populate: { path: "author" } })
       .populate("author");
     if (!venue) {
       req.flash("error", "Venue not found!");
@@ -61,6 +49,7 @@ router.get(
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const venue = await Venue.findById(id);
@@ -76,9 +65,11 @@ router.get(
 router.put(
   "/:id",
   isLoggedIn,
+  isAuthor,
   validateVenue,
   catchAsync(async (req, res) => {
     const { id } = req.params;
+
     const venue = await Venue.findByIdAndUpdate(
       id,
       { ...req.body.venue },
@@ -95,6 +86,7 @@ router.put(
 router.delete(
   "/:id",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
 
