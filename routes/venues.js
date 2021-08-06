@@ -14,8 +14,8 @@ router
   .get(catchAsync(venues.index))
   .post(
     isLoggedIn,
-    validateVenue,
     upload.array("image"),
+    validateVenue,
     catchAsync(venues.createVenue)
   );
 
@@ -24,7 +24,13 @@ router.get("/new", isLoggedIn, venues.renderNewForm);
 router
   .route("/:id")
   .get(catchAsync(venues.showVenue))
-  .put(isLoggedIn, isAuthor, validateVenue, catchAsync(venues.editVenue))
+  .put(
+    isLoggedIn,
+    isAuthor,
+    upload.array("image"),
+    validateVenue,
+    catchAsync(venues.editVenue)
+  )
   .delete(isLoggedIn, isAuthor, catchAsync(venues.deleteVenue));
 
 router.get(

@@ -30,7 +30,16 @@ const seedDB = async () => {
       rental: rental === 1 ? "Yes" : "No",
       location: `${cities[rand].city}, ${cities[rand].state}`,
       name: `${cities[rand].city} ${sample(places)}`,
-      image: "https://source.unsplash.com/800x450/?badminton",
+      images: [
+        {
+          url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628226893/BGP/cuphw22x8ctoikdfwuep.jpg",
+          filename: "BGP/cuphw22x8ctoikdfwuep",
+        },
+        {
+          url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628226895/BGP/kf4wz4kv5kzyraf0vmbk.jpg",
+          filename: "BGP/kf4wz4kv5kzyraf0vmbk",
+        },
+      ],
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem voluptatum atque sunt molestiae saepe ipsam dolorem. Ipsa eveniet, reprehenderit corrupti vitae quo voluptatum praesentium. Qui labore ipsam quia blanditiis ipsum.",
       price,

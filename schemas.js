@@ -4,11 +4,12 @@ module.exports.venueSchema = Joi.object({
   venue: Joi.object({
     name: Joi.string().required(),
     price: Joi.number().required().min(0),
-    image: Joi.string().required(),
+    // images: Joi.string().required(),
     location: Joi.string().required(),
     rental: Joi.string().allow(""),
     description: Joi.string().required(),
   }).required(),
+  deleteImages: Joi.array(),
 });
 
 module.exports.reviewSchema = Joi.object({

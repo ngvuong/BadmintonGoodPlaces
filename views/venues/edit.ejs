@@ -8,6 +8,7 @@
       method="POST"
       novalidate
       class="validated-form"
+      enctype="multipart/form-data"
     >
       <div class="mb-3">
         <label class="form-label" for="name">Name</label>
@@ -29,18 +30,6 @@
           name="venue[location]"
           id="location"
           value="<%= venue.location %>"
-          required
-        />
-        <div class="valid-feedback">Ok!</div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="image">Image URL</label>
-        <input
-          class="form-control"
-          type="text"
-          name="venue[image]"
-          id="image"
-          value="<%= venue.image %>"
           required
         />
         <div class="valid-feedback">Ok!</div>
@@ -97,11 +86,35 @@
         </textarea>
         <div class="valid-feedback">Ok!</div>
       </div>
+
+      <label for="images" class="mb-2">Add more images</label>
+      <div class="input-group mb-3">
+        <input
+          type="file"
+          class="form-control"
+          id="images"
+          name="image"
+          multiple
+        />
+        <label class="input-group-text" for="images">Upload</label>
+      </div>
+      <div class="mb-3">
+        <% venue.images.forEach((img,i) => { %>
+        <img src="<%=img.thumbnail%>" class="img-thumbnail" alt="" />
+        <div class="form-check-inline">
+          <input
+            type="checkbox"
+            name="deleteImages[]"
+            id="image-<%=i %>"
+            value="<%= img.filename %>"
+          />
+        </div>
+        <label for="image-<%=i %>">Delete</label>
+        <% }) %>
+      </div>
       <button class="btn btn-primary my-3">Save Changes</button>
     </form>
 
-    <button class="btn btn-light">
-      <a href="/venues/<%=venue.id %> ">Back</a>
-    </button>
+    <a href="/venues/<%=venue.id %> ">Back</a>
   </div>
 </div>
