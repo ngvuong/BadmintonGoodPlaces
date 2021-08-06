@@ -11,8 +11,10 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createVenue = async (req, res) => {
   const venue = new Venue(req.body.venue);
+  venue.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   venue.author = req.user.id;
   await venue.save();
+  console.log(venue);
   req.flash("success", "Successfully created venue!");
   res.redirect(`/venues/${venue.id}`);
 };

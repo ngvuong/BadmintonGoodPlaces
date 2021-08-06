@@ -4,13 +4,20 @@ const venues = require("../controllers/venues");
 
 const catchAsync = require("../utils/catchAsync");
 const { isLoggedIn, validateVenue, isAuthor } = require("../middleware");
-
+const multer = require("multer");
+const { storage } = require("../cloudinary");
+const upload = multer({ storage });
 const Venue = require("../models/venue");
 
 router
   .route("/")
   .get(catchAsync(venues.index))
-  .post(isLoggedIn, validateVenue, catchAsync(venues.createVenue));
+  .post(
+    isLoggedIn,
+    validateVenue,
+    upload.array("image"),
+    catchAsync(venues.createVenue)
+  );
 
 router.get("/new", isLoggedIn, venues.renderNewForm);
 

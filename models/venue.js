@@ -8,7 +8,7 @@ const VenueSchema = new Schema({
   description: String,
   location: String,
   hours: String,
-  image: String,
+  images: [{ url: String, filename: String }],
   rental: String,
   author: {
     type: Schema.Types.ObjectId,
