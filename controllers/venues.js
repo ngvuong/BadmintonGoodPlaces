@@ -71,6 +71,9 @@ module.exports.editVenue = async (req, res) => {
 
 module.exports.deleteVenue = async (req, res) => {
   const { id } = req.params;
+  for (let filename of Venue.findById(id).images) {
+    await cloudinary.uploader.destroy(filename);
+  }
 
   await Venue.findByIdAndDelete(id);
   req.flash("success", "Deleted venue!");
