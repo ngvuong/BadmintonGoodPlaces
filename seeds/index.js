@@ -4,6 +4,11 @@ const Review = require("../models/review");
 const cities = require("./cities");
 const { places } = require("./seedHelpers");
 
+require("dotenv").config();
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 mongoose.connect("mongodb://localhost:27017/badminton-venue", {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -25,10 +30,17 @@ const seedDB = async () => {
     const rand = Math.floor(Math.random() * 1000);
     const rental = Math.floor(Math.random() * 2);
     const price = Math.floor(Math.random() * 21) + 5;
+    const geoData = await geocoder
+      .forwardGeocode({
+        query: `${cities[rand].city}, ${cities[rand].state}`,
+        limit: 1,
+      })
+      .send();
     const venue = new Venue({
       author: "610a5798ed0f3a670219c315",
       rental: rental === 1 ? "Yes" : "No",
       location: `${cities[rand].city}, ${cities[rand].state}`,
+      geometry: geoData.body.features[0].geometry,
       name: `${cities[rand].city} ${sample(places)}`,
       images: [
         {

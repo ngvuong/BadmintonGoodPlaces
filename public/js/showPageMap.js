@@ -1,8 +1,16 @@
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoibmd2dW9uZyIsImEiOiJja3M1ZDNrdmQwZnFoMzFzMzdwOG8yejBhIn0.mVbo1HGGs-dYEeU8iuS9Fg";
+mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
   container: "map", // container ID
-  style: "mapbox://styles/mapbox/streets-v11", // style URL
-  center: [-74.5, 40], // starting position [lng, lat]
+  style: "mapbox://styles/mapbox/outdoors-v11", // style URL
+  center: venue.geometry.coordinates, // starting position [lng, lat]
   zoom: 9, // starting zoom
 });
+
+new mapboxgl.Marker()
+  .setLngLat(venue.geometry.coordinates)
+  .setPopup(
+    new mapboxgl.Popup({ offset: 25 }).setHTML(
+      `<h3>${venue.name}</h3><p>${venue.location}</p>`
+    )
+  )
+  .addTo(map);

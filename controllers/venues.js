@@ -17,8 +17,8 @@ module.exports.createVenue = async (req, res) => {
   const geoData = await geocoder
     .forwardGeocode({ query: req.body.venue.location, limit: 1 })
     .send();
-  console.log(geoData.body.features);
-  // res.send("k");
+  console.log(process.env);
+
   const venue = new Venue(req.body.venue);
   venue.geometry = geoData.body.features[0].geometry;
   venue.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
