@@ -17,14 +17,17 @@ module.exports.createVenue = async (req, res) => {
   const geoData = await geocoder
     .forwardGeocode({ query: req.body.venue.location, limit: 1 })
     .send();
-  console.log(process.env);
 
   const venue = new Venue(req.body.venue);
   venue.geometry = geoData.body.features[0].geometry;
   venue.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+  if (!venue.images[0]) {
+    venue.images.push({
+      url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628580058/BGP/xqbdszlitdubs0narruh.jpg",
+    });
+  }
   venue.author = req.user.id;
   await venue.save();
-  console.log(venue);
   req.flash("success", "Successfully created venue!");
   res.redirect(`/venues/${venue.id}`);
 };

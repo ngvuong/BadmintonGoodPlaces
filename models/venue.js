@@ -11,35 +11,43 @@ ImageSchema.virtual("thumbnail").get(function () {
   return this.url.replace("/upload", "/upload/w_200");
 });
 
-const VenueSchema = new Schema({
-  name: String,
-  price: Number,
-  description: String,
-  location: String,
-  hours: String,
-  images: [ImageSchema],
-  geometry: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      required: true,
+const opts = { toJSON: { virtuals: true } };
+const VenueSchema = new Schema(
+  {
+    name: String,
+    price: Number,
+    description: String,
+    location: String,
+    hours: String,
+    images: [ImageSchema],
+    geometry: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
-    coordinates: {
-      type: [Number],
-      required: true,
-    },
-  },
-  rental: String,
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  reviews: [
-    {
+    rental: String,
+    author: {
       type: Schema.Types.ObjectId,
-      ref: "Review",
+      ref: "User",
     },
-  ],
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
+  },
+  opts
+);
+
+VenueSchema.virtual("properties.popUpMarkup").get(function () {
+  return `<a href='/venues/${this._id}'>${this.name}</a>`;
 });
 
 VenueSchema.post("findOneAndDelete", async function (venue) {
