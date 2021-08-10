@@ -18,6 +18,17 @@ const VenueSchema = new Schema({
   location: String,
   hours: String,
   images: [ImageSchema],
+  geometry: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
+  },
   rental: String,
   author: {
     type: Schema.Types.ObjectId,

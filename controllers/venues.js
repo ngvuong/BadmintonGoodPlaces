@@ -1,5 +1,8 @@
 const Venue = require("../models/venue");
 const { cloudinary } = require("../cloudinary");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 
 module.exports.index = async (req, res) => {
   const venues = await Venue.find({});
@@ -11,7 +14,13 @@ module.exports.renderNewForm = (req, res) => {
 };
 
 module.exports.createVenue = async (req, res) => {
+  const geoData = await geocoder
+    .forwardGeocode({ query: req.body.venue.location, limit: 1 })
+    .send();
+  console.log(geoData.body.features);
+  // res.send("k");
   const venue = new Venue(req.body.venue);
+  venue.geometry = geoData.body.features[0].geometry;
   venue.images = req.files.map((f) => ({ url: f.path, filename: f.filename }));
   venue.author = req.user.id;
   await venue.save();
@@ -71,8 +80,11 @@ module.exports.editVenue = async (req, res) => {
 
 module.exports.deleteVenue = async (req, res) => {
   const { id } = req.params;
-  for (let filename of Venue.findById(id).images) {
-    await cloudinary.uploader.destroy(filename);
+  venue = await Venue.findById(id);
+  if (venue.images) {
+    for (let filename of venue.images) {
+      await cloudinary.uploader.destroy(filename);
+    }
   }
 
   await Venue.findByIdAndDelete(id);
