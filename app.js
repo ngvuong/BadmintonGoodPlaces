@@ -20,9 +20,10 @@ const methodOverride = require("method-override");
 const venueRoutes = require("./routes/venues");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
-const dbUrl = process.env.DB_URL;
+const MongoStore = require("connect-mongo");
 
-// "mongodb://localhost:27017/badminton-venue"
+// const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_UR || "mongodb://localhost:27017/badminton-venue";
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -45,11 +46,28 @@ app.set("views", path.join(__dirname, "/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(mongoSanitize());
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+  })
+);
+
+const secret = process.env.SECRET || "badsecret";
+
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  secret,
+  touchAfter: 24 * 60 * 60,
+});
+
+store.on("error", function (e) {
+  console.log("session error", e);
+});
 
 const sessionConfig = {
+  store,
   name: "session",
-  secret: "badsecret",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
