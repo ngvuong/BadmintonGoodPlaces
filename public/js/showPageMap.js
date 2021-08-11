@@ -5,6 +5,7 @@ const map = new mapboxgl.Map({
   center: venue.geometry.coordinates, // starting position [lng, lat]
   zoom: 9, // starting zoom
 });
+map.addControl(new mapboxgl.NavigationControl());
 
 new mapboxgl.Marker()
   .setLngLat(venue.geometry.coordinates)
