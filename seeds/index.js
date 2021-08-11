@@ -46,12 +46,12 @@ const seedDB = async () => {
       name: `${city} ${sample(places)}`,
       images: [
         {
-          url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628226893/BGP/cuphw22x8ctoikdfwuep.jpg",
-          filename: "BGP/cuphw22x8ctoikdfwuep",
+          url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628580058/BGP/xqbdszlitdubs0narruh.jpg",
+          filename: "BGP/xqbdszlitdubs0narruh",
         },
         {
-          url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628226895/BGP/kf4wz4kv5kzyraf0vmbk.jpg",
-          filename: "BGP/kf4wz4kv5kzyraf0vmbk",
+          url: "https://res.cloudinary.com/dszjo28hy/image/upload/v1628580056/BGP/qxp7hqxcikzyzlea82hj.jpg",
+          filename: "BGP/qxp7hqxcikzyzlea82hj",
         },
       ],
       description:
